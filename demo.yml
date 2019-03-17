@@ -1,0 +1,36 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: demo-customvision
+spec:
+  selector:
+    app: demo-customvision
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-customvision
+  labels:
+    app: demo-customvision
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-customvision
+  template:
+    metadata:
+      labels:
+        app: demo-customvision
+    spec:
+      containers:
+      - name: demo-customvision
+        image: zjregistry01.azurecr.io/customvision:v1
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: acrsecret
